@@ -6,7 +6,7 @@ typedef unsigned long long ull;
 typedef __int128_t i128;
 typedef pair<ll, ll> pll;
 typedef stack<tuple<ll, ll, bool>> stpl;
-#define file "PERMUTATION_ORDER"
+#define file "3397"
 const ll N = 20;
 ll t;
 ll fac[N + 1];
