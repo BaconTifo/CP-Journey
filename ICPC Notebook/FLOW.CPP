@@ -73,7 +73,7 @@ struct dinic{ // O(M * SQRT(N)), OVERALL MOST USEFUL, KHONG THE MIN COST
 };
 struct ford{ // O(M * ~~~), FOR WEIGHTED-EDGES AND MIN COST
     vector<vector<edge>> adj;
-    vector<ll> d, ptr, pi, inq;
+    vector<ll> d, ptr, pi, inq, par, pari;
     ll n, m, s, t;
     void init(){
         cin>>n>>m>>s>>t;
@@ -82,6 +82,8 @@ struct ford{ // O(M * ~~~), FOR WEIGHTED-EDGES AND MIN COST
         ptr.assign(n + 1, 0);
         pi.assign(n + 1, INF);
         inq.assign(n + 1, 0);
+        par.assign(n + 1, 0);
+        pari.assign(n + 1, 0);
         for(ll i = 1; i<=m; i++){
             ll u, v, c, w; cin>>u>>v>>c>>w;
             adj[u].push_back(edge(v, c, 0, w, adj[v].size()));
@@ -93,25 +95,73 @@ struct ford{ // O(M * ~~~), FOR WEIGHTED-EDGES AND MIN COST
         setpi();
         ll flow = 0, cost = 0;
         while(true){
-            
+            auto [u, v] = dijikstra();
+            if(u <= 0) continue;
+            flow += u;
+            cost += v; 
+            ll cur = t;
+            while(par[cur]){
+                ll nxt = par[cur];
+                adj[nxt][pari[cur]].f += flow;
+                cur = nxt;
+            }
         }
+        cout<<flow<<" "<<cost;
+    }
+    pll dijikstra(){
+        for(ll i = 1; i<=n; i++){
+            d[i] = INF;
+        }
+        d[s] = 0;
+        priority_queue<pll, vector<pll>, greater<pll>> pq;
+        pq.push({0, s});
+        while(!pq.empty()){
+            auto [x, u] = pq.top();
+            pq.pop();
+            if(x != d[u]) continue;
+            for(ll i = 0; i < adj[u].size(); i++){
+                auto &e = adj[u][i];
+                if(e.c - e.f == 0) continue;
+                if(x + e.w + pi[u] - pi[e.to] < d[e.to]){
+                    d[e.to] = x + e.w + pi[u] - pi[e.to];
+                    pari[e.to] = i;
+                    par[e.to] = u;
+                }
+            }
+        }
+        if(d[t] == INF){
+            return {-1, -1};
+        }
+        ll cur = t;
+        ll flow = INF, cost = 0;
+        while(par[cur]){
+            ll nxt = par[cur];
+            flow = min(flow, adj[nxt][pari[cur]].c - adj[nxt][pari[cur]].f);
+            cost += adj[nxt][pari[cur]].w;  
+            cur = nxt;
+        }
+        for(ll i = 1; i<=n; i++){
+            if(d[i] == INF) continue;
+            pi[i] += d[i];
+        }
+        return {flow, cost};
     }
     void setpi(){
-        d[s] = 0;
+        pi[s] = 0;
         priority_queue<pll, vector<pll>, greater<pll>> pq;
         pq.push({0, s});
         inq[s] = 1;
         while(!pq.empty()){
             auto [x, u] = pq.top();
             pq.pop();
-            if(x != d[u]) continue;
+            if(x != pi[u]) continue;
             inq[u] = 0;
             for(auto &e : adj[u]){
                 if(e.c - e.f == 0) continue;
-                if(x + e.w < d[e.to]){
-                    d[e.to] = x + e.w;
+                if(x + e.w < pi[e.to]){
+                    pi[e.to] = x + e.w;
                     if(!inq[e.to]){
-                        pq.push({d[e.to], e.to});
+                        pq.push({pi[e.to], e.to});
                         inq[e.to] = 1;
                     }
                 }
