@@ -170,10 +170,90 @@ struct ford{ // O(M * ~~~), FOR WEIGHTED-EDGES AND MIN COST
     }
 };
 struct karp{ // O(M * SQRT(N)), FOR BIPARTITE ONLY
-
+    vector<vector<ll>> adj;
+    vector<ll> seen, dist, matchL, matchR;
+    ll cnt, n, m, L, R, ite;
+    void init(){
+        cin>>L>>R>>m;
+        n = L + R;
+        matchL.assign(L + 1, 0);
+        matchR.assign(R + 1, 0);
+        seen.assign(L + 1, 0);
+        dist.assign(L + 1, INF);
+        adj.assign(L + 1, vector<ll>());
+        for(ll i = 1; i<=m; i++){
+            ll u, v; cin>>u>>v;
+            u++;
+            v++;
+            adj[u].push_back(v);
+        }
+        solve();
+    }       
+    ll dfs(ll u){
+        if(seen[u] == ite) return 0;
+        seen[u] = ite;
+        for(ll v : adj[u]){
+            if(!matchR[v]){
+                matchL[u] = v;
+                matchR[v] = u;
+                return 1;
+            }
+        }
+        for(ll v : adj[u]){
+            if(dist[matchR[v]] == dist[u] + 1 && dfs(matchR[v])){
+                matchL[u] = v;
+                matchR[v] = u;
+                return 1;
+            }
+        }
+        return 0;
+    }
+    void solve(){
+        cnt = 0, ite = 0;
+        while(true){
+            queue<ll> q;
+            for(ll i = 1; i<=L; i++){
+                if(!matchL[i]){
+                    q.push(i);
+                    dist[i] = 0;
+                }
+                else dist[i] = INF;
+            }
+            while(!q.empty()){
+                ll u = q.front();
+                q.pop();
+                for(ll v : adj[u]){
+                    if(matchR[v] && dist[matchR[v]] == INF){
+                        dist[matchR[v]] = dist[u] + 1;
+                        q.push(matchR[v]);
+                    }
+                }
+            }
+            ll match = 0;
+            ite++;
+            for(ll i = 1; i<=L; i++){
+                if(!matchL[i]){
+                    match += dfs(i);
+                }
+            }
+            if(!match) break;
+            cnt += match;
+        }
+        cout<<cnt<<'\n';
+        for(ll i = 1; i<=L; i++){
+            if(matchL[i]){
+                cout<<i - 1<<" "<<matchL[i] - 1<<'\n';
+            }
+        }
+    }
 };
 // LUU Y, NEU LA DO THI HAI PHIA, CHUNG TA SE DAT C(U, V) = C(V, U) = CAP, NGUOC LAI CHI DAT C(U, V) = CAP
 
 
-ll main(){
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    karp Karp;
+    Karp.init();
 }
