@@ -45,7 +45,7 @@ void scc(ll u, ll p){ // STRONGLY CONNECTED COMPONENT
     st.push(u);
     timer++; low[u] = num[u] = timer;
     for(edge e : adj[u]){
-        if(e.to == p || del[e.to]) continue;
+        if(del[e.to]) continue;
         if(!num[e.to]){
             scc(e.to, u);
             low[u] = min(low[u], low[e.to]);
@@ -69,6 +69,7 @@ void bcc(ll u, ll p_edge){ // BICONNECTED COMPONENT
         if(!num[e.to]){
             st_e.push(e.index);
             bcc(e.to, e.index);
+            low[u] = min(low[u], low[e.to]);
             if(low[e.to] >= num[u]){
                 ll v;
                 do{

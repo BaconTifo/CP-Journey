@@ -55,9 +55,10 @@ struct matrix{
         matrix a = *this;
         matrix c(a.row(), b.col()); // A COL = B ROW
         for(ll i = 0; i < a.row(); i++){
-            for(ll j = 0; j < b.col(); j++){
-                for(ll k = 0; k < a.col(); k++){
-                    c[i][j] += a[i][k] * b[k][j];
+            for(ll k = 0; k < a.col(); k++){
+                if(a[i][k] == 0) continue;
+                for(ll j = 0; j < b.col(); j++){
+                    c[i][j] += (a[i][k] * b[k][j]);
                 }
             }
         }

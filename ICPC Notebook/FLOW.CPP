@@ -127,6 +127,7 @@ struct ford{ // O(M * ~~~), FOR WEIGHTED-EDGES AND MIN COST
                     d[e.to] = x + e.w + pi[u] - pi[e.to];
                     pari[e.to] = i;
                     par[e.to] = u;
+                    pq.push({d[e.to], e.to});
                 }
             }
         }
