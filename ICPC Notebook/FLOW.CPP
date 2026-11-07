@@ -150,11 +150,11 @@ struct ford{ // O(M * ~~~), FOR WEIGHTED-EDGES AND MIN COST
     }
     void setpi(){
         pi[s] = 0;
-        priority_queue<pll, vector<pll>, greater<pll>> pq;
+        queue<pll> pq;
         pq.push({0, s});
         inq[s] = 1;
         while(!pq.empty()){
-            auto [x, u] = pq.top();
+            auto [x, u] = pq.front();
             pq.pop();
             if(x != pi[u]) continue;
             inq[u] = 0;
