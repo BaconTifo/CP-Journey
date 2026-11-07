@@ -124,7 +124,7 @@ vector<ll> euler_circuit(ll u, ll m){ // m la so canh
         }
     }
     reverse(ans.begin(), ans.end());
-    if(ans.size() != m + 1) return {};
+    if(ans.size() != m + 1 && ans.front() != ans.back()) return {};
     return ans;
 }
 
