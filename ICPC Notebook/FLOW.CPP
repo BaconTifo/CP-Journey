@@ -156,6 +156,7 @@ struct ford{ // O(M * ~~~), FOR WEIGHTED-EDGES AND MIN COST
         while(!pq.empty()){
             auto [x, u] = pq.front();
             pq.pop();
+            inq[u] = 0;
             if(x != pi[u]) continue;
             inq[u] = 0;
             for(auto &e : adj[u]){

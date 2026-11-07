@@ -31,6 +31,9 @@ bool inv_mod(ll a, ll mod, ll &inv){
     return true;
 }
 bool diophantine(ll a, ll b, ll c, ll &x, ll &y){
+    if(a == 0 && b == 0){
+        return c == 0;
+    }
     ll d = ext_euc(a, b, x, y);
     if(c % d != 0) return false;
     x *= c/d;
