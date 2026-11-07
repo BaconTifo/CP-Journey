@@ -44,14 +44,21 @@ ll sign(ll x){
     if(x > 0) return 1;
     return 0;
 }
+bool on_segment(point a, point b, point c){
+    return (c.x - a.x) * (c.x - b.x) <= 0 && (c.y - a.y) * (c.y - b.y) <= 0;
+}
 bool intersect(line u, line v){
-    ll cross_prod = cross(u, v);
-    if(cross_prod == 0) return true;
-    ll a = sign(cross(u, line(u.a, v.a)));
-    ll b = sign(cross(u, line(u.a, v.b)));
-    ll c = sign(cross(v, line(v.a, u.a)));
-    ll d = sign(cross(v, line(v.a, u.b)));
-    return a * b < 0 && c * d < 0;
+    point a = u.a, b = u.b, c = v.a, d = v.b;
+    ll c1 = cross(line(a, b), line(a, c));
+    ll c2 = cross(line(a, b), line(a, d));
+    ll c3 = cross(line(c, d), line(c, a));
+    ll c4 = cross(line(c, d), line(c, b));
+
+    if(c1 == 0 && on_segment(a, b, c)) return true;
+    if(c2 == 0 && on_segment(a, b, d)) return true;
+    if(c3 == 0 && on_segment(c, d, a)) return true;
+    if(c4 == 0 && on_segment(c, d, b)) return true;
+    return (c1 * c2 < 0 && c3 * c4 < 0);
 }
 vector<point> make_hull(vector<point> &pts){
     vector<point> hull;

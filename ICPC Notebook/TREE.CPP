@@ -19,16 +19,18 @@ ll ptr[M + 1];
 ll timer;
 void dfs(ll u, ll p){ // DFS TREE + TIM KHOP/CAU
     timer++; low[u] = num[u] = timer;
+    ll childcnt = 0;
     for(edge e : adj[u]){
         if(e.to == p) continue;
         if(!num[e.to]){
+            childcnt++;
             dfs(e.to, u);
             low[u] = min(low[u], low[e.to]);
             if(low[e.to] == num[e.to]){ // CANH CAU
                 isB[e.index] = 1;
             }
             if(p == -1){
-                if(adj[u].size() > 1) isC[u] = 1; // DINH KHOP
+                if(childcnt > 1) isC[u] = 1; // DINH KHOP
             }
             else{
                 if(low[e.to] >= num[u]) isC[u] = 1; // DINH KHOP
@@ -65,6 +67,7 @@ void bcc(ll u, ll p_edge){ // BICONNECTED COMPONENT
     for(edge e: adj[u]){
         if(e.index == p_edge) continue;
         if(!num[e.to]){
+            st_e.push(e.index);
             bcc(e.to, e.index);
             if(low[e.to] >= num[u]){
                 ll v;

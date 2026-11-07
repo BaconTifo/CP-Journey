@@ -96,13 +96,14 @@ struct ford{ // O(M * ~~~), FOR WEIGHTED-EDGES AND MIN COST
         ll flow = 0, cost = 0;
         while(true){
             auto [u, v] = dijikstra();
-            if(u <= 0) continue;
+            if(u <= 0) break;
             flow += u;
-            cost += v; 
+            cost += v * u; 
             ll cur = t;
             while(par[cur]){
                 ll nxt = par[cur];
-                adj[nxt][pari[cur]].f += flow;
+                adj[nxt][pari[cur]].f += u;
+                adj[cur][adj[nxt][pari[cur]].ptr].f -= u;
                 cur = nxt;
             }
         }
@@ -183,8 +184,6 @@ struct karp{ // O(M * SQRT(N)), FOR BIPARTITE ONLY
         adj.assign(L + 1, vector<ll>());
         for(ll i = 1; i<=m; i++){
             ll u, v; cin>>u>>v;
-            u++;
-            v++;
             adj[u].push_back(v);
         }
         solve();
@@ -242,7 +241,7 @@ struct karp{ // O(M * SQRT(N)), FOR BIPARTITE ONLY
         cout<<cnt<<'\n';
         for(ll i = 1; i<=L; i++){
             if(matchL[i]){
-                cout<<i - 1<<" "<<matchL[i] - 1<<'\n';
+                cout<<i<<" "<<matchL[i]<<'\n';
             }
         }
     }
